@@ -2,9 +2,12 @@ import os
 import requests
 import zipfile
 
-def download_file(url, output_path):
+def download_file(url, output_path, user_agent):
     """Download a file from a URL and save it to the specified path."""
-    response = requests.get(url, stream=True)
+    headers = {
+        "User-Agent": user_agent
+    }
+    response = requests.get(url, headers=headers, stream=True)
     if response.status_code == 200:
         with open(output_path, 'wb') as file:
             for chunk in response.iter_content(chunk_size=8192):
@@ -32,6 +35,9 @@ def main():
     download_dir = "downloads"
     extracted_dir = "extracted"
 
+    # Specify your User-Agent with your email
+    user_agent = "emir/1.0 (bouhamarm@gmail.com)"
+
     if not os.path.exists(download_dir):
         os.makedirs(download_dir)
 
@@ -41,7 +47,7 @@ def main():
         extract_to = os.path.join(extracted_dir, name)
 
         print(f"Processing {name}...")
-        download_file(url, zip_path)
+        download_file(url, zip_path, user_agent)
         extract_zip(zip_path, extract_to)
 
 if __name__ == "__main__":
